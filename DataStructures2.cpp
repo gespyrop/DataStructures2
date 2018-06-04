@@ -21,6 +21,8 @@ int main(int argc, char* argv[])
 	B.addNode(90);
 	B.addNode(250);
 	B.addNode(3);
+	B.deleteNode(55);
+	B.deleteNode(125);
 
 	cout << "Preorder: ";
 	B.preorder();

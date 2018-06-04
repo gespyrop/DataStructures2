@@ -16,6 +16,13 @@ public:
 	BinarySearchTree(float b, float c);
 	void addNode(const T& data);
 	void addNode(const T& data, Node<T>* curr);
+	void deleteNode(const T& data);
+	void deleteNode(const T& data, Node<T>* curr);
+	void deleteRoot();
+	void Delete(Node<T>* parent, Node<T>* target);
+	T subtreeMin(Node<T>* curr);
+	bool search(const T& data);
+	bool search(const T& data, Node<T>* curr);
 	void preorder();
 	void preorder(Node<T>* r);
 	void inorder();
