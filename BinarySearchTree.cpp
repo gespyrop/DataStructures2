@@ -144,6 +144,22 @@ bool BinarySearchTree<T>::search(const T& data, Node<T>* curr) {
 }
 
 template <class T>
+void BinarySearchTree<T>::rotateRight(Node<T>* curr) {
+	Node<T>* L = curr->left;
+	if (curr == root) root = L;
+	curr->left = L->right;
+	L->right = curr;
+}
+
+template <class T>
+void BinarySearchTree<T>::rotateLeft(Node<T>* curr) {
+	Node<T>* R = curr->right;
+	if (curr == root) root = R;
+	curr->right = R->left;
+	L->left = curr;
+}
+
+template <class T>
 void BinarySearchTree<T>::preorder() {
 	preorder(root);
 }

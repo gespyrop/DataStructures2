@@ -23,6 +23,8 @@ public:
 	T subtreeMin(Node<T>* curr);
 	bool search(const T& data);
 	bool search(const T& data, Node<T>* curr);
+	void rotateRight(Node<T>* curr);
+	void rotateLeft(Node<T>* curr);
 	void preorder();
 	void preorder(Node<T>* r);
 	void inorder();
