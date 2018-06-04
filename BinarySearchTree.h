@@ -25,6 +25,7 @@ public:
 	bool search(const T& data, Node<T>* curr);
 	void rotateRight(Node<T>* curr);
 	void rotateLeft(Node<T>* curr);
+	Node<T>* getParent(Node<T>* curr);
 	void preorder();
 	void preorder(Node<T>* r);
 	void inorder();

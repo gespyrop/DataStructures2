@@ -146,17 +146,37 @@ bool BinarySearchTree<T>::search(const T& data, Node<T>* curr) {
 template <class T>
 void BinarySearchTree<T>::rotateRight(Node<T>* curr) {
 	Node<T>* L = curr->left;
-	if (curr == root) root = L;
 	curr->left = L->right;
 	L->right = curr;
+	if (curr == root) root = L;
+	else {
+		Node<T>* parent = getParent(curr);
+		if (parent->left == curr) parent->left = L;
+		else parent->right = L;
+	}
 }
 
 template <class T>
 void BinarySearchTree<T>::rotateLeft(Node<T>* curr) {
 	Node<T>* R = curr->right;
-	if (curr == root) root = R;
 	curr->right = R->left;
-	L->left = curr;
+	R->left = curr;
+	if (curr == root) root = R;
+	else {
+		Node<T>* parent = getParent(curr);
+		if (parent->left == curr) parent->left = R;
+		else parent->right = R;
+	}
+}
+
+template <class T>
+Node<T>* BinarySearchTree<T>::getParent(Node<T>* curr) {
+	Node<T>* parent = root;
+	while (parent->left != curr && parent->right != curr) {
+		if (curr->data < parent->data) parent = parent->left;
+		else parent = parent->right;
+	}
+	return parent;
 }
 
 template <class T>
