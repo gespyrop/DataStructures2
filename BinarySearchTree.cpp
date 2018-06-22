@@ -15,24 +15,38 @@ BinarySearchTree<T>::BinarySearchTree(float b, float c)
 	this->c = c;
 }
 
+
 template <class T>
 void BinarySearchTree<T>::addNode(const T& data) {
-	if (root == NULL) root = new Node<T>(data);
-	else addNode(data, root);
+	if (root == NULL) root = new Node<T>(data);	//Αν το δέντρο είναι κενό ο νέος κόμβος γίνεται ρίζα του
+	else addNode(data, root);					//Αλλιώς ξεκινάμε απο την ρίζα
 }
 
 template <class T>
 void BinarySearchTree<T>::addNode(const T& data, Node<T>* curr) {
-	if (data == curr->data) return;
-	else if (data < curr->data) {
-		if(curr->left == NULL) curr->left = new Node<T>(data);
-		else addNode(data, curr->left);
-	}
-	else {
-		if (curr->right == NULL) curr->right = new Node<T>(data);
-		else addNode(data, curr->right);
+	int depth = 0;			//Βάθος του νέου κόμβου
+	Stack <Node<T>*> path;	//Στοίβα ώστε να κρατάμε το μονοπάτι
+	while (true) {
+		depth++;			//Αυξάνουμε το βάθος κάτα 1
+		path.push(curr);	//Προστείθεται ο κόμβος στο μονοπάτι
+		if (data == curr->data) return; //Αν το στοιχείο υπάρχει ήδη στο δέντρο η διαδικασιία τερματίζει
+		else if (data < curr->data) {	//Αν έιναι μικρότερο του στοιχείου που βρισκόμαστε
+			if (curr->left == NULL) {	
+				curr->left = new Node<T>(data);	//Αν δεν έχει αριστερό παιδί το νέο στοιχείο γίνεται αριστερό του παιδί
+				break;
+			}
+			else curr = curr->left;		//Αλλιώς πηγάινουμε στο αριστερό του παιδί
+		}
+		else {							//Αν έιναι μεγαλύτερο του στοιχείου που βρισκόμαστε
+			if (curr->right == NULL) {
+				curr->right = new Node<T>(data); //Αν δεν έχει δεξί παιδί το νέο στοιχείο γίνεται δεξί του παιδί
+				break;
+			}
+			else curr = curr->right; //Αλλιώς πηγάινουμε στο δεξί του παιδί
+		}
 	}
 }
+
 
 template <class T>
 bool BinarySearchTree<T>::search(const T& data) {
