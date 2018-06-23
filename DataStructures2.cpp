@@ -2,6 +2,7 @@
 #include <iostream>
 #include "BinarySearchTree.h"
 #include "BinarySearchTree.cpp"
+#include "Stack.cpp"
 
 using namespace std;
 
