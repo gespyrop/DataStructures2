@@ -1,6 +1,7 @@
 #pragma once
 #include "Node.h"
 #include "Node.cpp"
+#include "Stack.h"
 #include <iostream>
 
 using namespace std;
@@ -21,6 +22,7 @@ public:
 	void deleteRoot();
 	void Delete(Node<T>* parent, Node<T>* target);
 	T subtreeMin(Node<T>* curr);
+	int subtreeElements(Node<T>* subtreeRoot);
 	bool search(const T& data);
 	bool search(const T& data, Node<T>* curr);
 	void rotateRight(Node<T>* curr);
@@ -28,6 +30,9 @@ public:
 	Node<T>* getParent(Node<T>* curr);
 	void preorder();
 	void preorder(Node<T>* r);
+	Node<T>* reconstruct(Node<T>* r);
+	void inorderToArray(Node<T>* r, Node<T>* arr[], int &index);
+	Node<T>* arrayToTree(Node<T>* arr[], int start, int end);
 	void inorder();
 	void inorder(Node<T>* r);
 	void postorder();
