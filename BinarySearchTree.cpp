@@ -1,23 +1,34 @@
 ﻿#include "stdafx.h"
 #include "BinarySearchTree.h"
 
+//Default constructor
 template <class T>
 BinarySearchTree<T>::BinarySearchTree()
 {
 	root = NULL;
+	this->d = 0;
+	this->n = 0;
 }
 
+//Constructor με ορίσματα
 template <class T>
 BinarySearchTree<T>::BinarySearchTree(float b, float c)
 {
 	root = NULL;
+	this->d = 0;
+	this->n = 0;
 	this->b = b;
 	this->c = c;
 }
 
+template <class T>
+BinarySearchTree<T>::~BinarySearchTree() {
+	delete root;
+}
 
 template <class T>
 void BinarySearchTree<T>::addNode(const T& data) {
+	n++;
 	if (root == NULL) root = new Node<T>(data);	//Αν το δέντρο είναι κενό ο νέος κόμβος γίνεται ρίζα του
 	else addNode(data, root);					//Αλλιώς ξεκινάμε απο την ρίζα
 }
@@ -25,11 +36,14 @@ void BinarySearchTree<T>::addNode(const T& data) {
 template <class T>
 void BinarySearchTree<T>::addNode(const T& data, Node<T>* curr) {
 	int depth = 0;			//Βάθος του νέου κόμβου
-	Stack <Node<T>*> path;	//Στοίβα ώστε να κρατάμε το μονοπάτι
+	Stack<Node<T>*>* path = new Stack<Node<T>*>;	//Στοίβα ώστε να κρατάμε το μονοπάτι
 	while (true) {
 		depth++;			//Αυξάνουμε το βάθος κάτα 1
-		path.push(curr);	//Προστείθεται ο κόμβος στο μονοπάτι
-		if (data == curr->data) return; //Αν το στοιχείο υπάρχει ήδη στο δέντρο η διαδικασιία τερματίζει
+		path->push(curr);	//Προστείθεται ο κόμβος στο μονοπάτι
+		if (data == curr->data) {	//Αν το στοιχείο υπάρχει ήδη στο δέντρο η διαδικασιία τερματίζει
+			n--;					//Το n μειώνεται κατα 1 αφου τελίκα το νέο στοιχείο δεν εισάγεται
+			return;
+		}
 		else if (data < curr->data) {	//Αν έιναι μικρότερο του στοιχείου που βρισκόμαστε
 			if (curr->left == NULL) {	
 				curr->left = new Node<T>(data);	//Αν δεν έχει αριστερό παιδί το νέο στοιχείο γίνεται αριστερό του παιδί
@@ -45,6 +59,23 @@ void BinarySearchTree<T>::addNode(const T& data, Node<T>* curr) {
 			else curr = curr->right; //Αλλιώς πηγάινουμε στο δεξί του παιδί
 		}
 	}
+	if (depth > c * log2(n + 1 + d)) {
+		int height = 1;
+		Node<T>* v = path->pop();
+		int nv = subtreeElements(v);
+		while (height <= c * log2(nv + 1) && !path->isEmpty()) {
+			height++;
+			v = path->pop();
+			nv = subtreeElements(v);
+		}
+		if (!path->isEmpty()) {
+			Node<T>* parent = path->pop();
+			if (v->data < parent->data) parent->left = reconstruct(v);
+			else parent->right = reconstruct(v);
+		}
+		else root = reconstruct(root);
+	}
+	delete path;
 } 
 
 template <class T>
@@ -56,50 +87,12 @@ int BinarySearchTree<T>::subtreeElements(Node<T>* subtreeRoot) {
 }
 
 template <class T>
-Node<T>* BinarySearchTree<T>::reconstruct(Node<T>* r) {
-	int n = subtreeElements(r);
-	int index = 0;
-	Node<T>** arr = new Node<T>*[n];
-	inorderToArray(r, arr, index);
-	return arrayToTree(arr, 0, n - 1);
-}
-
-template <class T>
-void BinarySearchTree<T>::inorderToArray(Node<T>* r, Node<T>* arr[], int &index) {
-	if (r == NULL) return;
-	else {
-		inorderToArray(r->left, arr, index);
-		arr[index++] = r;
-		inorderToArray(r->right, arr, index);
-	}
-}
-
-template <class T>
-Node<T>* BinarySearchTree<T>::arrayToTree(Node<T>* arr[], int start, int end) {
-	if (start > end) return NULL;
-	int middle = ((start + end) / 2);
-	Node<T>* newRoot = arr[middle];
-	newRoot->left = arrayToTree(arr, start, middle - 1);
-	newRoot->right = arrayToTree(arr, middle + 1, end);
-	return newRoot;
-}
-
-template <class T>
-bool BinarySearchTree<T>::search(const T& data) {
-	return search(data, root);
-}
-
-template <class T>
-bool BinarySearchTree<T>::search(const T& data, Node<T>* curr) {
-	if (curr == NULL) return false;
-	else if (data == curr->data) return true;
-	else if (data < curr->data) return search(data, curr->left);
-	else return search(data, curr->right);
-}
-
-template <class T>
 void BinarySearchTree<T>::deleteNode(const T& data) {
 	deleteNode(data, root);
+	if (d >= (pow(2, b / c) - 1) * (n + 1)) {
+		root = reconstruct(root);
+		d = 0;
+	}
 }
 
 template <class T>
@@ -110,17 +103,27 @@ void BinarySearchTree<T>::deleteNode(const T& data, Node<T>* curr) {
 		}
 		else {
 			if (data < curr->data && curr->left != NULL) {
-				if (data == curr->left->data) Delete(curr, curr->left);
+				if (data == curr->left->data) {
+					d++;
+					n--;
+					Delete(curr, curr->left);
+				}
 				else deleteNode(data, curr->left);
 			}
 			else if (data > curr->data && curr->right != NULL) {
-				if (data == curr->right->data) Delete(curr, curr->right);
+				if (data == curr->right->data) {
+					d++;
+					n--;
+					Delete(curr, curr->right);
+				}
 				else deleteNode(data, curr->right);
 			}
-			else cout << "The tree doesn't contain " << data << "!" << endl;
+			else {
+				cout << "The tree doesn't contain " << data << "!" << endl;
+			}
 		}
 	}
-	else return;
+	else cout << "The tree doesn't contain " << data << "!" << endl;;
 }
 
 template <class T>
@@ -130,7 +133,7 @@ void BinarySearchTree<T>::deleteRoot() {
 		int rootData = root->data;
 		int rsm;
 
-		if(root->left == NULL && root->right == NULL){
+		if (root->left == NULL && root->right == NULL) {
 			root = NULL;
 			delete delPtr;
 		}
@@ -194,39 +197,45 @@ T BinarySearchTree<T>::subtreeMin(Node<T>* curr) {
 }
 
 template <class T>
-void BinarySearchTree<T>::rotateRight(Node<T>* curr) {
-	Node<T>* L = curr->left;
-	curr->left = L->right;
-	L->right = curr;
-	if (curr == root) root = L;
+Node<T>* BinarySearchTree<T>::reconstruct(Node<T>* r) {
+	int n = subtreeElements(r);
+	int index = 0;
+	Node<T>** arr = new Node<T>*[n];
+	inorderToArray(r, arr, index);
+	return arrayToTree(arr, 0, n - 1);
+}
+
+template <class T>
+void BinarySearchTree<T>::inorderToArray(Node<T>* r, Node<T>* arr[], int &index) {
+	if (r == NULL) return;
 	else {
-		Node<T>* parent = getParent(curr);
-		if (parent->left == curr) parent->left = L;
-		else parent->right = L;
+		inorderToArray(r->left, arr, index);
+		arr[index++] = r;
+		inorderToArray(r->right, arr, index);
 	}
 }
 
 template <class T>
-void BinarySearchTree<T>::rotateLeft(Node<T>* curr) {
-	Node<T>* R = curr->right;
-	curr->right = R->left;
-	R->left = curr;
-	if (curr == root) root = R;
-	else {
-		Node<T>* parent = getParent(curr);
-		if (parent->left == curr) parent->left = R;
-		else parent->right = R;
-	}
+Node<T>* BinarySearchTree<T>::arrayToTree(Node<T>* arr[], int start, int end) {
+	if (start > end) return NULL;
+	int middle = ((start + end) / 2);
+	Node<T>* newRoot = arr[middle];
+	newRoot->left = arrayToTree(arr, start, middle - 1);
+	newRoot->right = arrayToTree(arr, middle + 1, end);
+	return newRoot;
 }
 
 template <class T>
-Node<T>* BinarySearchTree<T>::getParent(Node<T>* curr) {
-	Node<T>* parent = root;
-	while (parent->left != curr && parent->right != curr) {
-		if (curr->data < parent->data) parent = parent->left;
-		else parent = parent->right;
-	}
-	return parent;
+bool BinarySearchTree<T>::search(const T& data) {
+	return search(data, root);
+}
+
+template <class T>
+bool BinarySearchTree<T>::search(const T& data, Node<T>* curr) {
+	if (curr == NULL) return false;
+	else if (data == curr->data) return true;
+	else if (data < curr->data) return search(data, curr->left);
+	else return search(data, curr->right);
 }
 
 template <class T>
@@ -266,4 +275,9 @@ void BinarySearchTree<T>::postorder(Node<T>* curr) {
 	postorder(curr->left);
 	postorder(curr->right);
 	cout << curr->data << " ";
+}
+
+template <class T>
+bool BinarySearchTree<T>::isEmpty() {
+	return !root;
 }

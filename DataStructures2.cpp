@@ -2,35 +2,71 @@
 #include <iostream>
 #include "BinarySearchTree.h"
 #include "BinarySearchTree.cpp"
+#include "Stack.cpp"
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-	float b = atof(argv[1]);
-	float c = atof(argv[2]);
-	BinarySearchTree <int> B(b, c);
+	float b, c;
 
-	B.addNode(50);
-	B.addNode(12);
-	B.addNode(6);
-	B.addNode(90);
-	B.addNode(34);
-	B.addNode(55);
-	B.addNode(125);
-	B.addNode(90);
-	B.addNode(250);
-	B.addNode(3);
-	B.deleteNode(55);
-	B.deleteNode(125);
+	switch (argc) {
+		case 1:
+			cout << "Insert b: ";
+			cin >> b;
+			cout << "Insert c: ";
+			cin >> c;
+			break;
+		case 2:
+			cout << "Insert c: ";
+			cin >> c;
+			break;
+		default:
+			b = atof(argv[1]);
+			c = atof(argv[2]);
+	}
 
-	cout << "Preorder: ";
-	B.preorder();
-	cout << endl << "Inorder: ";
-	B.inorder();
-	cout << endl << "Postorder: ";
-	B.postorder();
-	cout << endl;
+	BinarySearchTree<int> *B = new BinarySearchTree<int>(b, c);
+
+	int element, choice = 4;
+
+	while (choice != 5) {
+		switch (choice) {
+			case 1:
+				cout << "\tInsert: ";
+				cin >> element;
+				B->addNode(element);
+				break;
+			case 2:
+				cout << "\tDelete: ";
+				cin >> element;
+				B->deleteNode(element);
+				break;
+			case 3:
+				if (!B->isEmpty()) {
+					cout << "\tPreorder: ";
+					B->preorder();
+					cout << endl << "\tInorder: ";
+					B->inorder();
+					cout << endl << "\tPostorder: ";
+					B->postorder();
+					cout << endl;
+				}
+				else cout << "The tree is empty!" << endl;
+				break;
+			case 4:
+				cout << "Operations:\n\n\t1 Insert Node\n\t2 Delete Node\n\t3 Display\n\t4 Show Instructions\n\t5 Exit\n" << endl;
+				break;
+			default:
+				cout << "Invalid choice!" << endl;
+		}
+
+		cout << "\nChoose operation: ";
+		cin >> choice;
+	}
+
+	delete B;
+	
 	return 0;
 }
 

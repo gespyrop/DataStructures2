@@ -28,6 +28,5 @@ T Stack<T>::pop()
 template <class T>
 bool Stack<T>::isEmpty()
 {
-	if (top != NULL) return false;
-	else return true;
+	return !top;
 }
