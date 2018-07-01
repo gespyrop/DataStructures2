@@ -7,10 +7,10 @@ template <class T>
 class StackNode
 {
 private:
-	T data;
-	StackNode* next;
+	T data;	//Στοιχείο του κόμβου
+	StackNode* next;	//Δείκτης στον επόμενο κόμβος
 public:
-	StackNode();
-	StackNode(T d);
+	StackNode();	//Default Constructor
+	StackNode(T d);	//Constructor με αρχικοποίηση του στοιχείου του κόμβου
 	friend class Stack<T>;
 };

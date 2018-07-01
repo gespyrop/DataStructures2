@@ -10,6 +10,6 @@ StackNode<T>::StackNode()
 template <class T>
 StackNode<T>::StackNode(T d)
 {
-	data = d;
+	data = d;	//Το στοιχείο του κόμβου παίρνει την τιμή του d
 	next = NULL;
 }

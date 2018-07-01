@@ -10,12 +10,13 @@ template <class T>
 class Node
 {
 private:
-	T data;
-	Node<T>* left;
-	Node<T>* right;
+	T data;	//Στοιχείο του κόμβου
+	Node<T>* left;	//Αριστερό παιδί
+	Node<T>* right;	//Δεξί παιδί
 
-public:Node();
-	Node(const T& d);
+public:
+	Node();				//Default Constructor
+	Node(const T& d);	//Constructor με αρχικοποίηση του στοιχείου του κόμβου
 
 	friend class BinarySearchTree<T>;
 };

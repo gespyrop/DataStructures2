@@ -11,7 +11,7 @@ Node<T>::Node()
 template<class T>
 Node<T>::Node(const T& d)
 {
-	data = d;	 
+	data = d;	 //Το στοιχείο του κόμβου παίρνει την τιμή του d
 	left = NULL; 
 	right = NULL;
 }
